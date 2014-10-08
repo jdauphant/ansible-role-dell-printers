@@ -1,0 +1,4 @@
+---
+ - name: install dependency for Debian OS family
+   apt: pkg="rpm2cpio,libcupsimage2:i386" state=installed
+   tags: ["packages","dell-printers"]

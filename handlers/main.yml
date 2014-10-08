@@ -1,0 +1,7 @@
+---
+- name: restart dell-printers
+  service: name=dell-printers state=restarted
+
+- name: reload dell-printers
+  service: name=dell-printers state=reloaded
+

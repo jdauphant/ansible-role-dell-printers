@@ -1,0 +1,11 @@
+---
+dell_printers:
+   -  name: "Dell-2150-Color"
+      zip_name: "05_2150_SFP_Linux.zip"
+      zip_url: "http://downloads.dell.com/FOLDER00409836M/1/05_2150_SFP_Linux.zip"
+      rpm_name: "Dell-2150-Color-Printer-1.0-1.i686.rpm"
+      rpm_path: 
+       - usr/lib/cups/filter/Dell_2150_Color_Printer
+       - usr/share/cups/Dell/dlut
+       - usr/share/cups/model/Dell
+dell_printers_tmp_dir: "/opt/ansible_tmp/roles/dell_printers"
