@@ -1,0 +1,53 @@
+---
+- include: "Debian.yml"
+  when: ansible_os_family == 'Debian'
+
+- name: Ensure download directory exist
+  file: state=directory dest={{ dell_printers_tmp_dir }}
+  tags: ["packages","dell-printers"]
+
+- name: Download driver package
+  get_url: url={{ item.zip_url }} dest={{ dell_printers_tmp_dir }}/{{ item.zip_name }}
+  with_items: dell_printers
+  when: item.name in dell_printers_to_install
+  tags: ["packages","dell-printers"]
+
+- name: Ensure installation directories exists
+  file: state=directory dest=/{{ item.1 }}
+  with_subelements:
+    - dell_printers
+    - rpm_path
+  when: item.0.name in dell_printers_to_install
+  tags: ["packages","dell-printers"]
+
+- name: Ensure extract directory exist
+  file: state=directory dest={{ dell_printers_tmp_dir }}/{{ item.name }}
+  with_items: dell_printers
+  when: item.name in dell_printers_to_install
+  tags: ["packages","dell-printers"]
+
+- name: Ensure archive is extracted
+  unarchive: copy=no src={{ dell_printers_tmp_dir }}/{{ item.zip_name }} dest={{ dell_printers_tmp_dir }}/{{ item.name }}
+  with_items: dell_printers
+  when: item.name in dell_printers_to_install
+  tags: ["packages","dell-printers"]
+
+- name: Ensure RPM is extracted
+  shell: rpm2cpio {{ item.rpm_name }} | cpio --extract --make-directories
+  args:
+     chdir: "{{ dell_printers_tmp_dir }}/{{ item.name }}/Linux"
+  with_items: dell_printers
+  when: item.name in dell_printers_to_install
+  tags: ["packages","dell-printers"]
+
+- name: Ensure file are copy
+  command: "cp -r -T {{ dell_printers_tmp_dir }}/{{ item.0.name }}/Linux/{{ item.1 }} /{{ item.1 }}"
+  with_subelements:
+    - dell_printers
+    - rpm_path
+  when: item.0.name in dell_printers_to_install
+  tags: ["packages","dell-printers"]
+
+- name: ensure cups is restarted
+  service: name=cups state=restarted
+  tags: ["service","dell-printers"]
