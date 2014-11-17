@@ -42,7 +42,7 @@
 
 - name: Ensure file are copy
   command: "cp -r -T {{ dell_printers_tmp_dir }}/{{ item.0.name }}/Linux/{{ item.1 }} /{{ item.1 }}"
-  with_subelements:
+  with_subelements: 
     - dell_printers
     - rpm_path
   when: item.0.name in dell_printers_to_install
