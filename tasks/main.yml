@@ -8,7 +8,7 @@
 
 - name: Download driver package
   get_url: url={{ item.zip_url }} dest={{ dell_printers_tmp_dir }}/{{ item.zip_name }}
-  with_items: dell_printers
+  with_items: "{{dell_printers}}"
   when: item.name in dell_printers_to_install
   tags: ["packages","dell-printers"]
 
@@ -22,13 +22,13 @@
 
 - name: Ensure extract directory exist
   file: state=directory dest={{ dell_printers_tmp_dir }}/{{ item.name }}
-  with_items: dell_printers
+  with_items: "{{dell_printers}}"
   when: item.name in dell_printers_to_install
   tags: ["packages","dell-printers"]
 
 - name: Ensure archive is extracted
   unarchive: copy=no src={{ dell_printers_tmp_dir }}/{{ item.zip_name }} dest={{ dell_printers_tmp_dir }}/{{ item.name }}
-  with_items: dell_printers
+  with_items: "{{dell_printers}}"
   when: item.name in dell_printers_to_install
   tags: ["packages","dell-printers"]
 
@@ -36,7 +36,7 @@
   shell: rpm2cpio {{ item.rpm_name }} | cpio --extract --make-directories
   args:
      chdir: "{{ dell_printers_tmp_dir }}/{{ item.name }}/Linux"
-  with_items: dell_printers
+  with_items: "{{dell_printers}}"
   when: item.name in dell_printers_to_install
   tags: ["packages","dell-printers"]
 
